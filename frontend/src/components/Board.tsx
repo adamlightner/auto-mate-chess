@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import type { CSSProperties } from 'react'
@@ -20,7 +20,7 @@ function buildCustomPieces(pieceSet: string) {
 
 interface BoardProps {
   fen: string
-  onMove: (from: string, to: string) => boolean
+  onMove: (from: string, to: string, promotion?: string) => boolean
   disabled?: boolean
   boardWidth?: number
   lastMove?: { from: string; to: string } | null
@@ -30,6 +30,7 @@ export default function Board({ fen, onMove, disabled = false, boardWidth = 560,
   const { pieceSet } = useSettings()
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null)
   const [legalTargets, setLegalTargets] = useState<string[]>([])
+  const pendingPromotion = useRef<{ from: string; to: string } | null>(null)
 
   function selectSquare(square: string) {
     const chess = new Chess(fen)
@@ -58,6 +59,11 @@ export default function Board({ fen, onMove, disabled = false, boardWidth = 560,
         return
       }
       if (legalTargets.includes(square)) {
+        if (isPromotionMove(selectedSquare, square)) {
+          pendingPromotion.current = { from: selectedSquare, to: square }
+          // Return without clearing — Chessboard will show the dialog
+          return
+        }
         const ok = onMove(selectedSquare, square)
         clearSelection()
         if (ok) return
@@ -75,10 +81,33 @@ export default function Board({ fen, onMove, disabled = false, boardWidth = 560,
     selectSquare(square)
   }
 
+  function isPromotionMove(from: string, to: string): boolean {
+    const chess = new Chess(fen)
+    const piece = chess.get(from as Parameters<typeof chess.get>[0])
+    if (!piece || piece.type !== 'p') return false
+    const toRank = to[1]
+    return (piece.color === 'w' && toRank === '8') || (piece.color === 'b' && toRank === '1')
+  }
+
   function onPieceDrop(source: string, target: string) {
     if (disabled) return false
     clearSelection()
+    if (isPromotionMove(source, target)) {
+      // Let the built-in promotion dialog handle it; store the pending move
+      pendingPromotion.current = { from: source, to: target }
+      return true
+    }
     return onMove(source, target)
+  }
+
+  function onPromotionPieceSelect(piece?: string, from?: string, to?: string): boolean {
+    const f = from ?? pendingPromotion.current?.from
+    const t = to ?? pendingPromotion.current?.to
+    pendingPromotion.current = null
+    if (!f || !t || !piece) return false
+    // piece is e.g. 'wQ', 'bR' — extract the lowercase type letter
+    const promotion = piece[1].toLowerCase() as 'q' | 'r' | 'b' | 'n'
+    return onMove(f, t, promotion)
   }
 
   const customSquareStyles = useMemo<Record<string, CSSProperties>>(() => {
@@ -126,12 +155,13 @@ export default function Board({ fen, onMove, disabled = false, boardWidth = 560,
         onSquareClick={onSquareClick}
         onPieceDragBegin={onPieceDragBegin}
         onPieceDragEnd={clearSelection}
+        onPromotionPieceSelect={onPromotionPieceSelect}
         boardWidth={boardWidth}
         customPieces={buildCustomPieces(pieceSet)}
         customSquareStyles={customSquareStyles}
         customBoardStyle={{ borderRadius: '4px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}
-        customDarkSquareStyle={{ backgroundColor: '#4a7c59' }}
-        customLightSquareStyle={{ backgroundColor: '#f0d9b5' }}
+        customDarkSquareStyle={{ backgroundColor: '#7F77DD' }}
+        customLightSquareStyle={{ backgroundColor: '#E8E6F8' }}
       />
     </div>
   )

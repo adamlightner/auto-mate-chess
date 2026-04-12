@@ -112,12 +112,12 @@ export default function Home() {
   const learnPct = Math.round((LEARNING_DATA.progress / LEARNING_DATA.total) * 100)
 
   return (
-    <div className="max-w-4xl mx-auto p-6 flex flex-col gap-6">
+    <div className="max-w-6xl mx-auto p-6 flex flex-col gap-6">
 
       {/* Row 1 — Hero + Profile stats tile */}
       <div className="flex gap-4 items-stretch">
         {/* Hero */}
-        <div className="flex-1 bg-gray-800 rounded-xl p-8 flex flex-col justify-center gap-3">
+        <div className="flex-[2] bg-gray-800 rounded-xl p-8 flex flex-col justify-center gap-3">
           <img src="/automate-logo-horizontal.svg" alt="AutoMate" className="w-full" />
           <p className="text-gray-400 text-sm leading-relaxed">
             An AI-assisted chess platform. Play, learn, and watch your rating climb.
@@ -125,7 +125,7 @@ export default function Home() {
         </div>
 
         {/* Profile stats tile */}
-        <div className="w-56 bg-gray-800 rounded-xl p-5 flex flex-col gap-4">
+        <div className="flex-1 bg-gray-800 rounded-xl p-5 flex flex-col gap-4">
           {/* Avatar + name */}
           <div className="flex items-center gap-3">
             {USER_AVATAR_URL ? (

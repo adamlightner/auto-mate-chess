@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import Board from '../components/Board'
 import EvalBar from '../components/EvalBar'
 import SidePanel from '../components/SidePanel'
-import NewGameModal from '../components/NewGameModal'
 import { newGame, postMove, fetchCurrentElo, resignGame, undoMove } from '../api/client'
 import { useChessGame } from '../hooks/useChessGame'
 import { useWebSocket } from '../hooks/useWebSocket'
@@ -40,7 +39,6 @@ export default function Play() {
   const [currentElo, setCurrentElo] = useState(1200)
   const [eloDelta, setEloDelta] = useState<number | null>(null)
   const [lastMove, setLastMove] = useState<{ from: string; to: string } | null>(null)
-  const [modalOpen, setModalOpen] = useState(true)
   const [backendError, setBackendError] = useState<string | null>(null)
 
   const boardSize = useBoardSize()
@@ -65,31 +63,30 @@ export default function Play() {
   const { send } = useWebSocket(gameId, onWsMessage)
 
   const handleStartGame = useCallback(async () => {
-    setModalOpen(false)
     reset()
     setEvalCp(0)
     setIsAnalyzing(false)
     setIsEngineTurn(false)
     setEloDelta(null)
     setLastMove(null)
+    setGameId(null)
     try {
       const res = await newGame(engineElo)
       setGameId(res.game_id)
       setBackendError(null)
     } catch {
       setBackendError('Cannot reach the backend. Is the server running?')
-      setModalOpen(true)
     }
   }, [engineElo, reset])
 
   const handleMove = useCallback(
-    (from: string, to: string): boolean => {
+    (from: string, to: string, promotion?: string): boolean => {
       if (!gameId || isEngineTurn || gameOver || !isLive) return false
-      if (!applyPlayerMove(from, to)) return false
+      if (!applyPlayerMove(from, to, promotion)) return false
 
       setLastMove({ from, to })
       setIsEngineTurn(true)
-      postMove(gameId, from, to)
+      postMove(gameId, from, to, promotion)
         .then((res) => {
           if (res.engine_move) {
             applyEngineMove(res.engine_move.uci)
@@ -102,7 +99,6 @@ export default function Play() {
             setGameOver(res.game_over as string)
             setEloDelta(res.elo_delta)
             refreshElo()
-            setModalOpen(true)
           }
           if (!res.game_over) {
             setIsAnalyzing(true)
@@ -126,7 +122,6 @@ export default function Play() {
     setGameOver('resigned')
     setEloDelta(res.elo_delta)
     refreshElo()
-    setModalOpen(true)
   }, [gameId, gameOver, isEngineTurn, setGameOver])
 
   const handleUndo = useCallback(async () => {
@@ -151,14 +146,6 @@ export default function Play() {
   return (
     <div className="relative flex items-center justify-center gap-4 p-4 h-full">
 
-      {modalOpen && (
-        <NewGameModal
-          engineElo={engineElo}
-          onEloChange={setEngineElo}
-          onStart={handleStartGame}
-        />
-      )}
-
       {/* Eval bar */}
       <div className="flex flex-col justify-center" style={{ height: boardSize + 80 }}>
         <EvalBar scoreCp={evalCp} isAnalyzing={isAnalyzing} height={boardSize} />
@@ -177,7 +164,7 @@ export default function Play() {
         <Board
           fen={displayFen}
           onMove={handleMove}
-          disabled={!!gameOver || isEngineTurn || !isLive || modalOpen}
+          disabled={!!gameOver || isEngineTurn || !isLive || !gameId}
           boardWidth={boardSize}
           lastMove={lastMove}
         />
@@ -194,23 +181,26 @@ export default function Play() {
       {/* Side panel */}
       <div className="flex flex-col" style={{ width: 320, height: boardSize + 80 }}>
         <SidePanel
+          gameId={gameId}
           history={history}
           gameOver={gameOver}
           turn={turn}
           isEngineTurn={isEngineTurn}
           eloDelta={eloDelta}
           currentElo={currentElo}
+          engineElo={engineElo}
           totalHalfMoves={totalHalfMoves}
           viewIndex={viewIndex}
           isLive={isLive}
           canUndo={canUndo}
+          onEloChange={setEngineElo}
+          onStart={handleStartGame}
           onGoFirst={goFirst}
           onGoPrev={goPrev}
           onGoNext={goNext}
           onGoLast={goLast}
           onUndo={handleUndo}
           onResign={handleResign}
-          onNewGame={() => setModalOpen(true)}
         />
       </div>
 

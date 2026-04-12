@@ -1,43 +1,59 @@
 import MoveHistory from './MoveHistory'
 import type { Color, MoveHistoryEntry } from '../types/chess'
 
+const ELO_OPTIONS = [1320, 1400, 1500, 1600, 1800, 2000, 2200, 2500, 2800, 3190]
+
+function eloLabel(elo: number) {
+  if (elo <= 1400) return 'Beginner — good for learning basics'
+  if (elo <= 1600) return 'Intermediate — solid club-level play'
+  if (elo <= 2000) return 'Advanced — strong positional understanding'
+  if (elo <= 2500) return 'Expert — near master-level strength'
+  return 'Maximum — full engine strength'
+}
+
 interface SidePanelProps {
+  gameId: string | null
   history: MoveHistoryEntry[]
   gameOver: string | null
   turn: Color
   isEngineTurn: boolean
   eloDelta: number | null
   currentElo: number
+  engineElo: number
   totalHalfMoves: number
   viewIndex: number
   isLive: boolean
   canUndo: boolean
+  onEloChange: (elo: number) => void
+  onStart: () => void
   onGoFirst: () => void
   onGoPrev: () => void
   onGoNext: () => void
   onGoLast: () => void
   onUndo: () => void
   onResign: () => void
-  onNewGame: () => void
 }
 
 export default function SidePanel({
+  gameId,
   history,
   gameOver,
   isEngineTurn,
   eloDelta,
   currentElo,
+  engineElo,
   totalHalfMoves,
   viewIndex,
   isLive,
   canUndo,
+  onEloChange,
+  onStart,
   onGoFirst,
   onGoPrev,
   onGoNext,
   onGoLast,
   onUndo,
   onResign,
-  onNewGame,
 }: SidePanelProps) {
   const deltaColor = eloDelta == null ? '' : eloDelta > 0 ? 'text-green-400' : eloDelta < 0 ? 'text-red-400' : 'text-yellow-400'
   const deltaLabel = eloDelta == null ? null : `${eloDelta > 0 ? '+' : ''}${eloDelta}`
@@ -51,6 +67,49 @@ export default function SidePanel({
       {label}
     </button>
   )
+
+  // ── Setup panel (before first game, or after game ends) ──────────────────────
+  const setupPanel = (
+    <div className="bg-gray-800 border border-brand/30 rounded-lg p-4 flex flex-col gap-3">
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+          Engine ELO
+        </label>
+        <select
+          value={engineElo}
+          onChange={(e) => onEloChange(Number(e.target.value))}
+          className="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-brand"
+        >
+          {ELO_OPTIONS.map((elo) => (
+            <option key={elo} value={elo}>{elo}</option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-500">{eloLabel(engineElo)}</p>
+      </div>
+      <button
+        onClick={onStart}
+        className="w-full py-2.5 rounded-lg bg-brand-dark hover:bg-brand text-white text-sm font-semibold transition-colors"
+      >
+        {gameOver ? 'New Game' : 'Start Game'}
+      </button>
+    </div>
+  )
+
+  // ── Before first game ────────────────────────────────────────────────────────
+  if (!gameId) {
+    return (
+      <div className="flex flex-col gap-3 h-full">
+        {setupPanel}
+        <div className="bg-gray-800 rounded-lg p-3 overflow-y-auto flex-1 opacity-40 pointer-events-none">
+          <MoveHistory history={[]} />
+        </div>
+        <div className="bg-gray-800 rounded-lg p-3 flex flex-col flex-1 opacity-40">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Analysis</p>
+          <p className="text-gray-500 text-sm italic">Press "Explain" after a move to get commentary.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-3 h-full">
@@ -88,17 +147,27 @@ export default function SidePanel({
         </button>
       </div>
 
-      {/* Status — engine thinking or game over */}
-      {(gameOver || isEngineTurn) && (
-        <div className="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between">
-          <span className={`text-sm ${gameOver ? 'text-yellow-400 font-semibold capitalize' : 'text-gray-400'}`}>
-            {gameOver ? gameOver.replace(/_/g, ' ') : 'Engine thinking…'}
-          </span>
-          {gameOver && deltaLabel && (
-            <span className="text-xs font-semibold text-gray-400">
-              {currentElo} <span className={deltaColor}>{deltaLabel}</span>
+      {/* Status — engine thinking */}
+      {isEngineTurn && !gameOver && (
+        <div className="bg-gray-800 rounded-lg px-3 py-2">
+          <span className="text-sm text-gray-400">Engine thinking…</span>
+        </div>
+      )}
+
+      {/* Game over — result + new game setup */}
+      {gameOver && (
+        <div className="flex flex-col gap-3">
+          <div className="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between">
+            <span className="text-sm text-yellow-400 font-semibold capitalize">
+              {gameOver.replace(/_/g, ' ')}
             </span>
-          )}
+            {deltaLabel && (
+              <span className="text-xs font-semibold text-gray-400">
+                {currentElo} <span className={deltaColor}>{deltaLabel}</span>
+              </span>
+            )}
+          </div>
+          {setupPanel}
         </div>
       )}
 
@@ -119,13 +188,15 @@ export default function SidePanel({
         </button>
       </div>
 
-      {/* New game — subtle footer button */}
-      <button
-        onClick={onNewGame}
-        className="text-xs text-gray-500 hover:text-gray-300 transition-colors py-1"
-      >
-        + New Game
-      </button>
+      {/* New game — subtle footer button (only when game active, not over) */}
+      {!gameOver && (
+        <button
+          onClick={onStart}
+          className="text-xs text-gray-500 hover:text-gray-300 transition-colors py-1"
+        >
+          + New Game
+        </button>
+      )}
 
     </div>
   )

@@ -39,7 +39,7 @@ export function useChessGame() {
     setTurn(chessRef.current.turn() as Color)
   }
 
-  const applyPlayerMove = useCallback((from: string, to: string, promotion = 'q'): boolean => {
+  const applyPlayerMove = useCallback((from: string, to: string, promotion: string = 'q'): boolean => {
     try {
       chessRef.current.move({ from, to, promotion })
     } catch {
