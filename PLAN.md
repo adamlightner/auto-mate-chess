@@ -125,28 +125,34 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 - [x] Undo button (reverts last full move pair)
 - [x] Move navigation — step through game history without leaving the board
 - [x] Last move highlight + legal move hints
-- [ ] Board orientation flip — play as black
-- [ ] Captured pieces display — show material balance above/below board
-- [ ] Sound effects — move, capture, check, game over
-- [ ] Promotion picker — UI to choose promotion piece (currently auto-queens)
-- [ ] Game over summary — result + ELO delta shown clearly in modal
+- [x] Board orientation flip — play as black
+- [x] Captured pieces display — show material balance above/below board
+- [x] Sound effects — move, capture, check, game over
+- [x] Promotion picker — UI to choose promotion piece (currently auto-queens)
+- [x] Game over summary — result + ELO delta shown clearly in modal
 
 ### Game Flow
-- [ ] Game-end modal (checkmate, stalemate, resignation, draw) — appears over the board when the game concludes
+- [x] Game-end modal (checkmate, stalemate, resignation, draw) — appears over the board when the game concludes
   - Shows result clearly (e.g. "Checkmate — You Win" / "You Lost" / "Draw")
   - Shows ELO delta (+12 / -8)
   - **Review** — closes modal, enables move navigation so the user can step through the game
   - **Rematch** — starts a new game at the same ELO immediately, no new-game modal
   - **New Bot** — opens the new-game modal so the user can pick a different ELO
-- [ ] Resign confirmation — small inline confirm step before resigning (prevent accidental clicks)
-- [ ] Stalemate / draw detection surfaced clearly (currently lumped with game-over)
+- [x] Resign confirmation — small inline confirm step before resigning (prevent accidental clicks)
+- [x] Stalemate / draw detection surfaced clearly (currently lumped with game-over)
 
 ### Learn → Openings
 - [ ] Opening trainer difficulty — separate ELO setting independent of game ELO
-- [ ] UI polish pass once feature is built (Phase 10)
+- [ ] UI polish pass once feature is built (Phase 9)
+
+### Learn → Middle Game
+- [ ] UI polish pass once feature is built (Phase 9)
+
+### Learn → End Game
+- [ ] UI polish pass once feature is built (Phase 9)
 
 ### Learn → Puzzles
-- [ ] UI polish pass once feature is built (Phase 10)
+- [ ] UI polish pass once feature is built (Phase 9)
 
 ### Profile
 - [ ] ELO chart styling — axis labels, grid lines, hover tooltips
@@ -155,6 +161,8 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 - [ ] Piece style picker — visual selector for board piece set
 
 **Done when:** Every page feels deliberate and finished, not placeholder. No rough edges in the sections that are already built.
+
+**Status:** Sidebar ✓ · Home ✓ · Play ✓ · Game Flow ✓ · Profile (pending below) · Learn (deferred to Phase 9)
 
 ---
 
@@ -172,17 +180,28 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 
 ---
 
-## Phase 9 — Learn: Openings + Puzzles
-**Goal:** Both Learn sub-pages are fully functional with LLM guidance.
+## Phase 9 — Learn: All Four Sections
+**Goal:** All four Learn sections are fully functional with LLM guidance.
 
-**Opening Trainer (`/learn/openings`):**
+**Opening (`/learn/openings`):**
 - [ ] `services/opening_book.py` — Lichess Opening Explorer API (masters + lichess endpoints, win rates, popularity)
 - [ ] `routers/openings.py` — `GET /openings` (list), `POST /openings/drill` (check move against book)
 - [ ] `models/opening.py` — track progress per opening
 - [ ] Select opening, drill mode, highlights correct/incorrect moves
 - [ ] LLM explains the purpose of each opening move when asked
 - [ ] Show move popularity % and win rates from Lichess data
-- [ ] Separate difficulty setting independent of game ELO
+
+**Middle Game (`/learn/middle-game`):**
+- [ ] Curated positions illustrating each concept (pawn structure, piece activity, etc.)
+- [ ] Interactive board — find the best move or plan
+- [ ] LLM explains why a move or plan is correct in context
+- [ ] Progress tracking per topic
+
+**End Game (`/learn/end-game`):**
+- [ ] Curated theoretical positions for each topic (K+P, rook endings, etc.)
+- [ ] Interactive board — player must find the winning technique
+- [ ] LLM explains the key concept (opposition, Lucena, etc.)
+- [ ] Progress tracking per topic
 
 **Puzzles (`/learn/puzzles`):**
 - [ ] `services/puzzles.py` — Lichess Puzzles API (free, no auth, filter by theme + rating)
@@ -191,7 +210,7 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 - [ ] LLM explains why the solution works when asked
 - [ ] Track puzzles solved + rating
 
-**Done when:** You can drill openings, solve puzzles, and ask the LLM to explain any position in either mode.
+**Done when:** You can work through any of the four sections, interact with positions, and ask the LLM to explain any concept.
 
 ---
 
@@ -210,4 +229,4 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 ---
 
 ## Current Phase
-**→ Phase 7 — Polish + UX**
+**→ Phase 7 — Polish + UX** (Profile section remaining, then Phase 8)

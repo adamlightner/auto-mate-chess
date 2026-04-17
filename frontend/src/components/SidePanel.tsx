@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import MoveHistory from './MoveHistory'
 import type { Color, MoveHistoryEntry } from '../types/chess'
 
@@ -11,6 +12,12 @@ function eloLabel(elo: number) {
   return 'Maximum — full engine strength'
 }
 
+const COLOR_OPTIONS: { value: 'white' | 'black' | 'random'; label: string; icon: string }[] = [
+  { value: 'white', label: 'White', icon: '♔' },
+  { value: 'black', label: 'Black', icon: '♚' },
+  { value: 'random', label: 'Random', icon: '?' },
+]
+
 interface SidePanelProps {
   gameId: string | null
   history: MoveHistoryEntry[]
@@ -20,11 +27,14 @@ interface SidePanelProps {
   eloDelta: number | null
   currentElo: number
   engineElo: number
+  playerColor: 'white' | 'black' | 'random'
   totalHalfMoves: number
   viewIndex: number
   isLive: boolean
   canUndo: boolean
+  showClassifications: boolean
   onEloChange: (elo: number) => void
+  onColorChange: (color: 'white' | 'black' | 'random') => void
   onStart: () => void
   onGoFirst: () => void
   onGoPrev: () => void
@@ -32,6 +42,7 @@ interface SidePanelProps {
   onGoLast: () => void
   onUndo: () => void
   onResign: () => void
+  onToggleClassifications: () => void
 }
 
 export default function SidePanel({
@@ -39,14 +50,15 @@ export default function SidePanel({
   history,
   gameOver,
   isEngineTurn,
-  eloDelta,
-  currentElo,
   engineElo,
+  playerColor,
   totalHalfMoves,
   viewIndex,
   isLive,
   canUndo,
+  showClassifications,
   onEloChange,
+  onColorChange,
   onStart,
   onGoFirst,
   onGoPrev,
@@ -54,9 +66,9 @@ export default function SidePanel({
   onGoLast,
   onUndo,
   onResign,
+  onToggleClassifications,
 }: SidePanelProps) {
-  const deltaColor = eloDelta == null ? '' : eloDelta > 0 ? 'text-green-400' : eloDelta < 0 ? 'text-red-400' : 'text-yellow-400'
-  const deltaLabel = eloDelta == null ? null : `${eloDelta > 0 ? '+' : ''}${eloDelta}`
+  const [confirmResign, setConfirmResign] = useState(false)
 
   const navBtn = (label: string, onClick: () => void, disabled: boolean) => (
     <button
@@ -71,6 +83,28 @@ export default function SidePanel({
   // ── Setup panel (before first game, or after game ends) ──────────────────────
   const setupPanel = (
     <div className="bg-gray-800 border border-brand/30 rounded-lg p-4 flex flex-col gap-3">
+      {/* Color selection */}
+      <div className="flex flex-col gap-1.5">
+        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Play as</label>
+        <div className="flex gap-1.5">
+          {COLOR_OPTIONS.map(({ value, label, icon }) => (
+            <button
+              key={value}
+              onClick={() => onColorChange(value)}
+              className={`flex-1 flex flex-col items-center gap-0.5 py-2 rounded-lg border text-xs font-medium transition-colors ${
+                playerColor === value
+                  ? 'border-brand bg-brand/20 text-white'
+                  : 'border-gray-600 bg-gray-700/50 text-gray-400 hover:border-gray-500 hover:text-white'
+              }`}
+            >
+              <span className="text-base leading-none">{icon}</span>
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ELO selection */}
       <div className="flex flex-col gap-1.5">
         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Engine ELO
@@ -86,6 +120,7 @@ export default function SidePanel({
         </select>
         <p className="text-xs text-gray-500">{eloLabel(engineElo)}</p>
       </div>
+
       <button
         onClick={onStart}
         className="w-full py-2.5 rounded-lg bg-brand-dark hover:bg-brand text-white text-sm font-semibold transition-colors"
@@ -101,7 +136,7 @@ export default function SidePanel({
       <div className="flex flex-col gap-3 h-full">
         {setupPanel}
         <div className="bg-gray-800 rounded-lg p-3 overflow-y-auto flex-1 opacity-40 pointer-events-none">
-          <MoveHistory history={[]} />
+          <MoveHistory history={[]} showClassifications={false} />
         </div>
         <div className="bg-gray-800 rounded-lg p-3 flex flex-col flex-1 opacity-40">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Analysis</p>
@@ -138,13 +173,34 @@ export default function SidePanel({
         >
           Undo
         </button>
-        <button
-          onClick={onResign}
-          disabled={!!gameOver || isEngineTurn || totalHalfMoves === 0}
-          className="flex-1 py-2 rounded bg-gray-700 hover:bg-red-700 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
-        >
-          Resign
-        </button>
+
+        {confirmResign ? (
+          <div className="flex-1 flex gap-1">
+            <button
+              onClick={() => {
+                setConfirmResign(false)
+                onResign()
+              }}
+              className="flex-1 py-2 rounded bg-red-700 hover:bg-red-600 text-white text-sm font-medium transition-colors"
+            >
+              Confirm
+            </button>
+            <button
+              onClick={() => setConfirmResign(false)}
+              className="flex-1 py-2 rounded bg-gray-700 hover:bg-gray-600 text-white text-sm font-medium transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setConfirmResign(true)}
+            disabled={!!gameOver || isEngineTurn || totalHalfMoves === 0}
+            className="flex-1 py-2 rounded bg-gray-700 hover:bg-red-700 disabled:opacity-30 disabled:cursor-not-allowed text-white text-sm font-medium transition-colors"
+          >
+            Resign
+          </button>
+        )}
       </div>
 
       {/* Status — engine thinking */}
@@ -154,26 +210,26 @@ export default function SidePanel({
         </div>
       )}
 
-      {/* Game over — result + new game setup */}
-      {gameOver && (
-        <div className="flex flex-col gap-3">
-          <div className="bg-gray-800 rounded-lg px-3 py-2 flex items-center justify-between">
-            <span className="text-sm text-yellow-400 font-semibold capitalize">
-              {gameOver.replace(/_/g, ' ')}
-            </span>
-            {deltaLabel && (
-              <span className="text-xs font-semibold text-gray-400">
-                {currentElo} <span className={deltaColor}>{deltaLabel}</span>
-              </span>
-            )}
-          </div>
-          {setupPanel}
-        </div>
-      )}
+      {/* After game ends — setup for next game */}
+      {gameOver && setupPanel}
 
       {/* Move history */}
       <div className="bg-gray-800 rounded-lg p-3 overflow-y-auto flex-1">
-        <MoveHistory history={history} />
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Moves</h2>
+          <button
+            onClick={onToggleClassifications}
+            title={showClassifications ? 'Hide move classifications' : 'Show move classifications'}
+            className={`text-xs px-2 py-0.5 rounded border transition-colors ${
+              showClassifications
+                ? 'border-brand bg-brand/20 text-brand-light'
+                : 'border-gray-600 text-gray-500 hover:border-gray-500 hover:text-gray-300'
+            }`}
+          >
+            Review
+          </button>
+        </div>
+        <MoveHistory history={history} showClassifications={showClassifications} />
       </div>
 
       {/* Analysis */}

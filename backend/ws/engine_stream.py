@@ -40,6 +40,9 @@ async def engine_stream(ws: WebSocket, game_id: str) -> None:
                 if msg is None:
                     break
                 await ws.send_json(msg)
+                # Keep last_eval_cp current so next move classification has the right baseline
+                if msg["type"] == "eval_done" and msg.get("score_cp") is not None:
+                    record.last_eval_cp = msg["score_cp"]
 
     except WebSocketDisconnect:
         pass

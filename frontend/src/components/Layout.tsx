@@ -31,6 +31,20 @@ const OpeningsIcon = () => (
   </svg>
 )
 
+const MiddleGameIcon = () => (
+  <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+      d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+  </svg>
+)
+
+const EndGameIcon = () => (
+  <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+      d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+  </svg>
+)
+
 const PuzzleIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
@@ -121,7 +135,7 @@ export default function Layout() {
       {/* Sidebar */}
       <aside
         className={`flex-shrink-0 bg-gray-800 border-r border-gray-700 flex flex-col p-3 gap-1 transition-all duration-300 ${
-          collapsed ? 'w-[60px]' : 'w-48'
+          collapsed ? 'w-[60px]' : 'w-56'
         }`}
       >
         {/* Logo / wordmark + collapse toggle */}
@@ -159,6 +173,7 @@ export default function Layout() {
 
         {navItem('/home', 'Home', <HomeIcon />)}
         {navItem('/play', 'Play', <PlayIcon />)}
+        {navItem('/puzzles', 'Puzzles', <PuzzleIcon />)}
 
         {/* Learn — expandable */}
         <div>
@@ -184,36 +199,33 @@ export default function Layout() {
 
           {learnOpen && !collapsed && (
             <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-gray-700 pl-3">
-              {navItem('/learn/openings', 'Openings', <OpeningsIcon />)}
-              {navItem('/learn/puzzles', 'Puzzles', <PuzzleIcon />)}
+              {navItem('/learn/openings', 'Opening', <OpeningsIcon />)}
+              {navItem('/learn/middle-game', 'Middle Game', <MiddleGameIcon />)}
+              {navItem('/learn/end-game', 'End Game', <EndGameIcon />)}
             </div>
           )}
 
           {/* Collapsed: show sub-items as standalone icon rows */}
           {collapsed && (
             <div className="flex flex-col gap-1 mt-1">
-              <NavLink
-                to="/learn/openings"
-                title="Openings"
-                className={({ isActive }) =>
-                  `flex justify-center py-2.5 rounded-lg border-l-2 transition-colors ${
-                    isActive ? activeBase : inactiveBase
-                  }`
-                }
-              >
-                <OpeningsIcon />
-              </NavLink>
-              <NavLink
-                to="/learn/puzzles"
-                title="Puzzles"
-                className={({ isActive }) =>
-                  `flex justify-center py-2.5 rounded-lg border-l-2 transition-colors ${
-                    isActive ? activeBase : inactiveBase
-                  }`
-                }
-              >
-                <PuzzleIcon />
-              </NavLink>
+              {[
+                { to: '/learn/openings',    title: 'Opening',     Icon: OpeningsIcon },
+                { to: '/learn/middle-game', title: 'Middle Game', Icon: MiddleGameIcon },
+                { to: '/learn/end-game',    title: 'End Game',    Icon: EndGameIcon },
+              ].map(({ to, title, Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  title={title}
+                  className={({ isActive }) =>
+                    `flex justify-center py-2.5 rounded-lg border-l-2 transition-colors ${
+                      isActive ? activeBase : inactiveBase
+                    }`
+                  }
+                >
+                  <Icon />
+                </NavLink>
+              ))}
             </div>
           )}
         </div>

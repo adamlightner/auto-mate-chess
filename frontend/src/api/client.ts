@@ -2,11 +2,14 @@ import type { MoveResponse } from '../types/chess'
 
 const BASE = '/api'
 
-export async function newGame(engineElo?: number): Promise<{ game_id: string; fen: string; turn: string }> {
+export async function newGame(
+  engineElo?: number,
+  playerColor?: 'white' | 'black',
+): Promise<{ game_id: string; fen: string; turn: string; engine_move: { san: string; uci: string } | null }> {
   const res = await fetch(`${BASE}/game/new`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ engine_elo: engineElo ?? 1320 }),
+    body: JSON.stringify({ engine_elo: engineElo ?? 1320, player_color: playerColor ?? 'white' }),
   })
   if (!res.ok) throw new Error('Failed to create game')
   return res.json()
@@ -17,11 +20,12 @@ export async function postMove(
   from: string,
   to: string,
   promotion?: string,
+  classify?: boolean,
 ): Promise<MoveResponse> {
   const res = await fetch(`${BASE}/game/${gameId}/move`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from, to, promotion }),
+    body: JSON.stringify({ from, to, promotion, classify: classify ?? false }),
   })
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Move failed' }))

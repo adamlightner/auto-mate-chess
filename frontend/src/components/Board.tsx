@@ -24,9 +24,10 @@ interface BoardProps {
   disabled?: boolean
   boardWidth?: number
   lastMove?: { from: string; to: string } | null
+  boardOrientation?: 'white' | 'black'
 }
 
-export default function Board({ fen, onMove, disabled = false, boardWidth = 560, lastMove }: BoardProps) {
+export default function Board({ fen, onMove, disabled = false, boardWidth = 560, lastMove, boardOrientation = 'white' }: BoardProps) {
   const { pieceSet } = useSettings()
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null)
   const [legalTargets, setLegalTargets] = useState<string[]>([])
@@ -157,6 +158,7 @@ export default function Board({ fen, onMove, disabled = false, boardWidth = 560,
         onPieceDragEnd={clearSelection}
         onPromotionPieceSelect={onPromotionPieceSelect}
         boardWidth={boardWidth}
+        boardOrientation={boardOrientation}
         customPieces={buildCustomPieces(pieceSet)}
         customSquareStyles={customSquareStyles}
         customBoardStyle={{ borderRadius: '4px', boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}

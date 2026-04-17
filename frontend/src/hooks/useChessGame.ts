@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from 'react'
 import { Chess } from 'chess.js'
-import type { Color, MoveHistoryEntry } from '../types/chess'
+import type { Color, MoveClassification, MoveHistoryEntry } from '../types/chess'
 
-function buildHistory(chess: Chess): MoveHistoryEntry[] {
+function buildHistory(chess: Chess, classifications: Map<number, MoveClassification>): MoveHistoryEntry[] {
   const moves = chess.history()
   const entries: MoveHistoryEntry[] = []
   for (let i = 0; i < moves.length; i += 2) {
@@ -10,6 +10,8 @@ function buildHistory(chess: Chess): MoveHistoryEntry[] {
       moveNumber: Math.floor(i / 2) + 1,
       white: moves[i],
       black: moves[i + 1],
+      whiteClass: classifications.get(i),
+      blackClass: classifications.get(i + 1),
     })
   }
   return entries
@@ -21,6 +23,7 @@ export function useChessGame() {
   const chessRef = useRef(new Chess())
   // fenHistory[0] = starting position, fenHistory[n] = after nth half-move
   const fenHistoryRef = useRef<string[]>([INITIAL_FEN])
+  const classificationsRef = useRef<Map<number, MoveClassification>>(new Map())
 
   const [viewIndex, setViewIndex] = useState(0)
   const [history, setHistory] = useState<MoveHistoryEntry[]>([])
@@ -35,19 +38,29 @@ export function useChessGame() {
   function syncState() {
     const newIdx = fenHistoryRef.current.length - 1
     setViewIndex(newIdx)
-    setHistory(buildHistory(chessRef.current))
+    setHistory(buildHistory(chessRef.current, classificationsRef.current))
     setTurn(chessRef.current.turn() as Color)
   }
 
-  const applyPlayerMove = useCallback((from: string, to: string, promotion: string = 'q'): boolean => {
+  // Returns the half-move index (0-based in chess.history()) on success, false on failure.
+  // Caller should save this index and pass it to addClassification once the API responds.
+  const applyPlayerMove = useCallback((from: string, to: string, promotion: string = 'q'): number | false => {
     try {
       chessRef.current.move({ from, to, promotion })
     } catch {
       return false
     }
+    const moveIndex = chessRef.current.history().length - 1
     fenHistoryRef.current = [...fenHistoryRef.current, chessRef.current.fen()]
     syncState()
-    return true
+    return moveIndex
+  }, [])
+
+  const addClassification = useCallback((moveIndex: number, classification: MoveClassification | null) => {
+    if (classification === null) return
+    classificationsRef.current = new Map(classificationsRef.current)
+    classificationsRef.current.set(moveIndex, classification)
+    setHistory(buildHistory(chessRef.current, classificationsRef.current))
   }, [])
 
   const applyEngineMove = useCallback((uci: string): void => {
@@ -79,6 +92,7 @@ export function useChessGame() {
   const reset = useCallback(() => {
     chessRef.current = new Chess()
     fenHistoryRef.current = [INITIAL_FEN]
+    classificationsRef.current = new Map()
     setViewIndex(0)
     setHistory([])
     setGameOver(null)
@@ -102,6 +116,7 @@ export function useChessGame() {
     setGameOver,
     applyPlayerMove,
     applyEngineMove,
+    addClassification,
     undoPlayerMove,
     undoLastFullMove,
     reset,
