@@ -95,6 +95,7 @@ export default function Openings() {
   const [strategyFilter, setStrategyFilter] = useState<Strategy>('e4')
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [moveIndex, setMoveIndex] = useState(0)
+  const [selectedVariation, setSelectedVariation] = useState<number | null>(null)
 
   const strategies = colorFilter === 'white' ? WHITE_STRATEGIES : BLACK_STRATEGIES
 
@@ -110,6 +111,7 @@ export default function Openings() {
   function selectOpening(id: string) {
     setSelectedId(id)
     setMoveIndex(0)
+    setSelectedVariation(null)
   }
 
   function handleColorFilter(c: 'white' | 'black') {
@@ -117,23 +119,41 @@ export default function Openings() {
     setStrategyFilter(c === 'white' ? 'e4' : 'vs-e4')
     setSelectedId(null)
     setMoveIndex(0)
+    setSelectedVariation(null)
   }
 
   function handleStrategyFilter(s: Strategy) {
     setStrategyFilter(s)
     setSelectedId(null)
     setMoveIndex(0)
+    setSelectedVariation(null)
   }
+
+  function handleVariationClick(index: number) {
+    if (selectedVariation === index) {
+      setSelectedVariation(null)
+      setMoveIndex(0)
+    } else {
+      setSelectedVariation(index)
+      setMoveIndex(0)
+    }
+  }
+
+  const currentMoves = useMemo(() => {
+    if (!selected) return []
+    if (selectedVariation !== null) return selected.variations[selectedVariation].movesArray
+    return selected.moves
+  }, [selected, selectedVariation])
 
   const fen = useMemo(() => {
     if (!selected) return 'start'
-    return computeFenAtIndex(selected.moves, moveIndex)
-  }, [selected, moveIndex])
+    return computeFenAtIndex(currentMoves, moveIndex)
+  }, [currentMoves, moveIndex])
 
   const lastMove = useMemo(() => {
     if (!selected) return null
-    return computeLastMove(selected.moves, moveIndex)
-  }, [selected, moveIndex])
+    return computeLastMove(currentMoves, moveIndex)
+  }, [currentMoves, moveIndex])
 
   const customSquareStyles = useMemo(() => {
     if (!lastMove) return {}
@@ -141,12 +161,11 @@ export default function Openings() {
     return { [lastMove.from]: highlight, [lastMove.to]: highlight }
   }, [lastMove])
 
-  const maxIndex = selected ? selected.moves.length : 0
+  const maxIndex = currentMoves.length
 
   const tokens = useMemo(() => {
-    if (!selected) return []
-    return selected.moves.map((san, i) => ({ san, halfMoveIndex: i + 1 }))
-  }, [selected])
+    return currentMoves.map((san, i) => ({ san, halfMoveIndex: i + 1 }))
+  }, [currentMoves])
 
   return (
     <div className="flex h-full overflow-hidden">
@@ -230,14 +249,26 @@ export default function Openings() {
           {selected ? (
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg font-bold text-white leading-tight">{selected.name}</h1>
-                {selected.levels.map((lvl) => (
+                <h1 className="text-lg font-bold text-white leading-tight">
+                  {selectedVariation !== null
+                    ? selected.variations[selectedVariation].name
+                    : selected.name}
+                </h1>
+                {selectedVariation !== null ? (
+                  <span className="text-xs text-brand-light border border-brand-dark/60 bg-brand-dark/20 px-2 py-0.5 rounded-full">
+                    Variation of {selected.name}
+                  </span>
+                ) : selected.levels.map((lvl) => (
                   <span key={lvl} className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${LEVEL_COLORS[lvl as Level]}`}>
                     {LEVEL_LABELS[lvl as Level]}
                   </span>
                 ))}
               </div>
-              <p className="text-sm text-gray-400 mt-1 leading-snug line-clamp-2">{selected.description}</p>
+              <p className="text-sm text-gray-400 mt-1 leading-snug line-clamp-2">
+                {selectedVariation !== null
+                  ? selected.variations[selectedVariation].moves
+                  : selected.description}
+              </p>
             </div>
           ) : (
             <div className="flex-1 min-w-0">
@@ -324,18 +355,34 @@ export default function Openings() {
         <div className="flex-shrink-0 border-t border-gray-700 bg-gray-800/50">
           <div className="px-4 pt-3 pb-1 flex items-center gap-2">
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Variations &amp; Gambits</p>
+            {selectedVariation !== null && (
+              <button
+                onClick={() => { setSelectedVariation(null); setMoveIndex(0) }}
+                className="text-xs text-brand-light hover:text-white border border-brand-dark/60 bg-brand-dark/20 px-2 py-0.5 rounded-full transition-colors"
+              >
+                ← Main Line
+              </button>
+            )}
           </div>
           {selected ? (
             <div className="flex gap-2.5 overflow-x-auto px-4 pb-4 pt-1">
-              {selected.variations.map((v, i) => (
-                <div
-                  key={i}
-                  className="flex-shrink-0 w-52 bg-gray-800 border border-gray-700 rounded-xl p-3 flex flex-col gap-1"
-                >
-                  <p className="text-sm font-semibold text-white leading-tight">{v.name}</p>
-                  <p className="text-xs text-gray-400 font-mono leading-snug">{v.moves}</p>
-                </div>
-              ))}
+              {selected.variations.map((v, i) => {
+                const isActive = selectedVariation === i
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleVariationClick(i)}
+                    className={`flex-shrink-0 w-52 rounded-xl p-3 flex flex-col gap-1 text-left transition-all border ${
+                      isActive
+                        ? 'bg-brand-dark/40 border-brand-light/60 ring-1 ring-brand-light/30'
+                        : 'bg-gray-800 border-gray-700 hover:border-gray-500 hover:bg-gray-700/60'
+                    }`}
+                  >
+                    <p className={`text-sm font-semibold leading-tight ${isActive ? 'text-brand-lighter' : 'text-white'}`}>{v.name}</p>
+                    <p className="text-xs text-gray-400 font-mono leading-snug">{v.moves}</p>
+                  </button>
+                )
+              })}
             </div>
           ) : (
             <div className="flex gap-2.5 overflow-x-auto px-4 pb-4 pt-1">
