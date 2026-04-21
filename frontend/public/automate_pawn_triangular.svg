@@ -1,0 +1,50 @@
+<svg width="100%" viewBox="0 0 680 220" role="img" style="" xmlns="http://www.w3.org/2000/svg">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">AutoMate pawn – triangular body</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">Pawn with a more triangular tapered body, white and black</desc>
+
+  <defs>
+    <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f2eeea"/>
+      <stop offset="100%" stop-color="#d8d2ca"/>
+    </linearGradient>
+    <linearGradient id="wg-base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ddd8d0"/>
+      <stop offset="100%" stop-color="#c8c2b8"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8a837a"/>
+      <stop offset="100%" stop-color="#65605a"/>
+    </linearGradient>
+    <linearGradient id="bg-base" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#72706a"/>
+      <stop offset="100%" stop-color="#54504a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- WHITE PAWN -->
+  <g transform="translate(122, 18)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+    <!-- base -->
+    <rect x="8" y="165" width="140" height="18" rx="9" fill="url(#wg-base)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <!-- platform -->
+    <rect x="20" y="153" width="116" height="14" rx="4" fill="url(#wg-base)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <!-- triangular body — wide at base, narrows sharply to neck -->
+    <path d="M42 153 L24 100 L44 78 L112 78 L132 100 L114 153Z" fill="url(#wg)" stroke="#2a2622" stroke-width="3" stroke-linejoin="round" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:round;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <!-- neck -->
+    <rect x="52" y="53" width="52" height="27" rx="4" fill="url(#wg)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <!-- head -->
+    <circle cx="78" cy="31" r="30" fill="url(#wg)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <!-- inner node -->
+    <circle cx="78" cy="31" r="10" fill="#ccc6bc" stroke="#2a2622" stroke-width="2" style="fill:rgb(204, 198, 188);stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+
+  <!-- BLACK PAWN -->
+  <g transform="translate(402, 18)" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">
+    <rect x="8" y="165" width="140" height="18" rx="9" fill="url(#bg-base)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <rect x="20" y="153" width="116" height="14" rx="4" fill="url(#bg-base)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <path d="M42 153 L24 100 L44 78 L112 78 L132 100 L114 153Z" fill="url(#bg)" stroke="#2a2622" stroke-width="3" stroke-linejoin="round" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:round;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <rect x="52" y="53" width="52" height="27" rx="4" fill="url(#bg)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <circle cx="78" cy="31" r="30" fill="url(#bg)" stroke="#2a2622" stroke-width="3" style="stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:3px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+    <circle cx="78" cy="31" r="10" fill="#585450" stroke="#2a2622" stroke-width="2" style="fill:rgb(88, 84, 80);stroke:rgb(42, 38, 34);color:rgb(255, 255, 255);stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, &quot;system-ui&quot;, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  </g>
+
+</svg>

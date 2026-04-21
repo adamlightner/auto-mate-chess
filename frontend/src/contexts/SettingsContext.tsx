@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from 'react'
 import type { ReactNode } from 'react'
 
 export const PIECE_SETS = [
+  { id: 'automate',    name: 'AutoMate' },
   { id: 'cburnett',    name: 'Classic' },
   { id: 'alpha',       name: 'Alpha' },
   { id: 'california',  name: 'California' },
@@ -27,9 +28,10 @@ const SettingsContext = createContext<SettingsContextValue>({
 })
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [pieceSet, setPieceSetState] = useState<string>(
-    () => localStorage.getItem('chess_piece_set') ?? 'cburnett'
-  )
+  const [pieceSet, setPieceSetState] = useState<string>(() => {
+    const saved = localStorage.getItem('chess_piece_set')
+    return saved ?? 'cburnett'
+  })
 
   function setPieceSet(set: string) {
     localStorage.setItem('chess_piece_set', set)

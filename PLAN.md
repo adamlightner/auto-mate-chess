@@ -53,116 +53,116 @@ Iterative milestones from scaffold to production. Each phase ends with something
 
 ---
 
-## Phase 5 — App Pages + Navigation
-**Goal:** Establish the three-section structure. Every page exists with its layout and placeholder content before any gets its full feature set.
+## Phase 5 — App Pages + Navigation ✓
+**Goal:** Establish the full navigation structure. Every page exists with its layout and placeholder content.
 
 ### Structure
 
 ```
-Nav: [ Play ]  [ Learn ]  [ Profile ]
+Nav: [ Home ]  [ Play ]  [ Study ]  [ Practice ]  [ Puzzles ]  [ Profile ]
 ```
 
-| Section | Route | Pages |
+| Section | Route | Purpose |
 |---|---|---|
-| **Play** | `/play` | Play vs Bot — choose engine rating, play game |
-| **Learn** | `/learn/openings` | Opening Trainer — drill opening lines |
-| **Learn** | `/learn/puzzles` | Puzzles — tactical puzzles by theme/rating |
-| **Profile** | `/profile` | ELO chart, stats, win/loss, game history |
+| **Home** | `/home` | Dashboard — stats, recent games, quick-start |
+| **Play** | `/play` | Play vs Stockfish |
+| **Study** | `/study/openings` | Passive learning — browse openings, read, step through lines |
+| **Study** | `/study/middlegame` | Middlegame concepts — read and explore |
+| **Study** | `/study/endgame` | Endgame concepts — read and explore |
+| **Practice** | `/practice/openings` | Interactive opening drills — move pieces, get feedback |
+| **Practice** | `/practice/endgames` | Endgame technique drills |
+| **Practice** | `/practice/patterns` | Pattern recognition drills |
+| **Puzzles** | `/puzzles` | Tactical puzzles by theme and rating |
+| **Profile** | `/profile` | ELO chart, stats, game history, settings |
 
 ### Tasks
 
 - [x] Install `react-router-dom`, set up routes in `main.tsx`
-- [x] `Layout.tsx` — shared shell with top nav: Play / Learn / Profile
-- [x] Nav shows active section, Learn has a dropdown for Openings and Puzzles
-- [x] `pages/Play.tsx` — move existing board + side panel here
-- [x] `pages/learn/Openings.tsx` — placeholder: board + opening picker stub
-- [x] `pages/learn/Puzzles.tsx` — placeholder: puzzle board stub
-- [x] `pages/Profile.tsx` — ELO chart + stats (win %, games played, best win) + game history table
-- [x] `/elo/history` reused for game history table (covers this need)
-- [x] Redirect `/` → `/play`
+- [x] `Layout.tsx` — shared shell with sidebar nav
+- [x] Nav shows active section with icons and labels
+- [x] `pages/Play.tsx` — board + side panel
+- [x] `pages/study/Openings.tsx` — opening explorer (browse, step through lines)
+- [x] `pages/study/MiddleGame.tsx` — placeholder
+- [x] `pages/study/EndGame.tsx` — placeholder
+- [ ] Rename `/learn/*` routes → `/study/*` in router and nav
+- [ ] Add **Practice** section to sidebar nav (below Study)
+- [ ] `pages/practice/Openings.tsx` — placeholder (interactive drill shell)
+- [ ] `pages/practice/Endgames.tsx` — placeholder
+- [ ] `pages/practice/Patterns.tsx` — placeholder
+- [x] `pages/Puzzles.tsx` — placeholder
+- [x] `pages/Profile.tsx` — ELO chart + stats + game history
+- [x] Redirect `/` → `/home`
 
-**Done when:** All pages are reachable via the nav, each has its layout and real or placeholder content, and the Play page still works end-to-end.
+**Done when:** All pages are reachable via the nav, each has its layout, and the Play page still works end-to-end.
 
 ---
 
-## Phase 6 — Home Page
-**Goal:** A landing page that orients new users and gives returning users a quick snapshot of their progress.
+## Phase 6 — Home Page ✓
+**Goal:** A landing page that orients new users and gives returning users a quick snapshot.
 
-- [x] `/home` route added to sidebar nav (first item)
-- [x] Hero section — app name, tagline, "Start Playing" CTA button
-- [x] Quick stats strip — current ELO, games played, win rate (pulled from existing `/elo` endpoints)
-- [x] Recent games list — last 5 games with result, ELO delta, opponent strength
-- [ ] "Continue" shortcut — if a game was in progress (future: session persistence), resume it
-- [x] Navigation cards — Play, Learn (Openings + Puzzles), Profile with short descriptions
+- [x] `/home` route added to sidebar nav
+- [x] Hero section with player stats
+- [x] Quick stats strip — ELO, games played, win rate
+- [x] Recent games list
+- [x] Navigation cards — Play, Study, Practice, Puzzles
 - [x] Redirect `/` → `/home`
-
-**Done when:** A new user lands here and immediately understands what the app does and where to go. A returning user sees their progress at a glance.
 
 ---
 
 ## Phase 7 — Polish + UX
-**Goal:** Each section of the app feels complete and intentional. Work through the nav sections one at a time.
+**Goal:** Each section of the app feels complete and intentional.
 
 ### Sidebar
 - [x] Active nav state is visually clear
-- [x] Sidebar collapses to icon-only on smaller screens
-- [x] Add icons to sidebar nav items
-- [x] Increase font size and make nav labels bold
-- [x] Move Profile to bottom of sidebar as a persistent icon/link
-
+- [x] Sidebar collapses to icon-only
+- [x] Icons for all nav items
+- [x] Profile pinned to bottom
+- [ ] Update sidebar to reflect new Study / Practice split (rename Learn → Study, add Practice)
 
 ### Home
-- [x] Remove 'Start Playing' in the top banner. 
-- [x] Add profile tile to the right of title banner with player stats. Empty state for brand-new users (no games yet)
-- [x] In row 2, create a start/continue learning that will have a progress bar, current/next chapter, etc. This can be template data for now.
-- [x] Move recent games to the very bottom. 
-- [x] Clean up icons in shortcut tiles to use the same color scheme. 
+- [x] Profile tile with player stats
+- [x] Start/continue learning tile with progress bar
+- [x] Recent games at bottom
+- [x] Clean icon color scheme
 
 ### Play
-- [x] ELO difficulty selector — set engine strength before starting (locked per game)
-- [x] New game modal — shown on load and after each game ends
-- [x] Resign button
-- [x] Undo button (reverts last full move pair)
-- [x] Move navigation — step through game history without leaving the board
+- [x] ELO difficulty selector
+- [x] New game modal
+- [x] Resign + Undo buttons
+- [x] Move navigation
 - [x] Last move highlight + legal move hints
-- [x] Board orientation flip — play as black
-- [x] Captured pieces display — show material balance above/below board
-- [x] Sound effects — move, capture, check, game over
-- [x] Promotion picker — UI to choose promotion piece (currently auto-queens)
-- [x] Game over summary — result + ELO delta shown clearly in modal
+- [x] Board orientation flip
+- [x] Captured pieces display
+- [x] Sound effects
+- [x] Promotion picker
+- [x] Game over modal with ELO delta
 
-### Game Flow
-- [x] Game-end modal (checkmate, stalemate, resignation, draw) — appears over the board when the game concludes
-  - Shows result clearly (e.g. "Checkmate — You Win" / "You Lost" / "Draw")
-  - Shows ELO delta (+12 / -8)
-  - **Review** — closes modal, enables move navigation so the user can step through the game
-  - **Rematch** — starts a new game at the same ELO immediately, no new-game modal
-  - **New Bot** — opens the new-game modal so the user can pick a different ELO
-- [x] Resign confirmation — small inline confirm step before resigning (prevent accidental clicks)
-- [x] Stalemate / draw detection surfaced clearly (currently lumped with game-over)
+### Study → Openings
+- [x] Opening explorer — browse by color and strategy (1.e4 / 1.d4 / vs 1.e4 / vs 1.d4)
+- [x] Title banner with opening name, level badges, description
+- [x] Board stepping through main line with move tokens
+- [x] Variations & Gambits panel (bottom)
+- [x] Key Ideas / Plans / Tactics panel (right)
+- [ ] Board centering fix (in progress)
 
-### Learn → Openings
-- [ ] Opening trainer difficulty — separate ELO setting independent of game ELO
-- [ ] UI polish pass once feature is built (Phase 9)
+### Study → Middle Game
+- [ ] UI polish pass (Phase 9)
 
-### Learn → Middle Game
-- [ ] UI polish pass once feature is built (Phase 9)
+### Study → End Game
+- [ ] UI polish pass (Phase 9)
 
-### Learn → End Game
-- [ ] UI polish pass once feature is built (Phase 9)
-
-### Learn → Puzzles
-- [ ] UI polish pass once feature is built (Phase 9)
+### Puzzles
+- [ ] UI polish pass (Phase 9)
 
 ### Profile
 - [ ] ELO chart styling — axis labels, grid lines, hover tooltips
 - [ ] Win/loss/draw bar animation
-- [ ] Game history — click a row to replay the game on a board
-- [ ] Piece style picker — visual selector for board piece set
+- [ ] Game history — click a row to replay on a board
+- [ ] Piece style picker
 
-**Done when:** Every page feels deliberate and finished, not placeholder. No rough edges in the sections that are already built.
+**Done when:** Every page feels deliberate and finished. No rough edges in sections already built.
 
-**Status:** Sidebar ✓ · Home ✓ · Play ✓ · Game Flow ✓ · Profile (pending below) · Learn (deferred to Phase 9)
+**Status:** Sidebar ✓ · Home ✓ · Play ✓ · Study/Openings (in progress) · Profile (pending) · Practice (Phase 9)
 
 ---
 
@@ -171,55 +171,123 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 
 - [ ] `services/llm.py` — Claude API call with position context (FEN, last move, eval, color to move)
 - [ ] `routers/analysis.py` — `POST /analysis` accepts FEN + move, returns explanation
-- [ ] LLM panel in Play page — "Explain this position" button, response displayed in side panel
-- [ ] LLM panel in Analysis page — explain any position from a loaded game or FEN
+- [ ] LLM panel in Play page — "Explain this position" button, response in side panel
 - [ ] Prompt engineering: move quality, tactical themes, what to watch for next
-- [ ] Loading state while waiting for LLM response
+- [ ] Loading state while waiting for response
 
 **Done when:** You can press a button on any board position and get a clear, useful explanation.
 
 ---
 
-## Phase 9 — Learn: All Four Sections
-**Goal:** All four Learn sections are fully functional with LLM guidance.
+## Phase 9 — Study: All Sections
+**Goal:** All Study sections are fully browsable with rich content.
 
-**Opening (`/learn/openings`):**
-- [ ] `services/opening_book.py` — Lichess Opening Explorer API (masters + lichess endpoints, win rates, popularity)
-- [ ] `routers/openings.py` — `GET /openings` (list), `POST /openings/drill` (check move against book)
-- [ ] `models/opening.py` — track progress per opening
-- [ ] Select opening, drill mode, highlights correct/incorrect moves
-- [ ] LLM explains the purpose of each opening move when asked
-- [ ] Show move popularity % and win rates from Lichess data
+**Opening (`/study/openings`):**
+- [ ] Full annotated opening data — descriptions, key ideas, plans, tactics for all lines
+- [ ] Move popularity % and win rates from Lichess Opening Explorer API
+- [ ] LLM explains the purpose of each move when asked
 
-**Middle Game (`/learn/middle-game`):**
-- [ ] Curated positions illustrating each concept (pawn structure, piece activity, etc.)
-- [ ] Interactive board — find the best move or plan
-- [ ] LLM explains why a move or plan is correct in context
-- [ ] Progress tracking per topic
+**Middle Game (`/study/middlegame`):**
+- [ ] Curated positions illustrating key concepts (pawn structure, piece activity, etc.)
+- [ ] Board stepping through illustrative lines
+- [ ] LLM explains why a plan is correct in context
 
-**End Game (`/learn/end-game`):**
-- [ ] Curated theoretical positions for each topic (K+P, rook endings, etc.)
-- [ ] Interactive board — player must find the winning technique
-- [ ] LLM explains the key concept (opposition, Lucena, etc.)
-- [ ] Progress tracking per topic
+**End Game (`/study/endgame`):**
+- [ ] Curated theoretical positions per topic (K+P, rook endings, etc.)
+- [ ] Board stepping through technique
+- [ ] LLM explains key concepts (opposition, Lucena, etc.)
 
-**Puzzles (`/learn/puzzles`):**
-- [ ] `services/puzzles.py` — Lichess Puzzles API (free, no auth, filter by theme + rating)
-- [ ] `routers/puzzles.py` — `GET /puzzles/next` returns a puzzle by rating range + theme
-- [ ] Puzzle board — shows position, player must find the winning line
-- [ ] LLM explains why the solution works when asked
-- [ ] Track puzzles solved + rating
-
-**Done when:** You can work through any of the four sections, interact with positions, and ask the LLM to explain any concept.
+**Done when:** All three Study sections have real content and feel like a reference resource.
 
 ---
 
-## Phase 10 — Deployment
+## Phase 10 — Practice: Opening Drills
+**Goal:** Interactive opening practice with move trees, hints, and commentary.
+
+### Data Architecture
+
+Opening content lives in JSON files (version-controlled, bundled at build time), not the database. Player progress lives in SQLite.
+
+```
+frontend/src/data/openings/
+  italian-game.json       ← move tree + annotations
+  ruy-lopez.json
+  sicilian-najdorf.json
+  ...
+```
+
+Each JSON file contains a **move tree** — a branching structure where every node is a position and edges are moves with annotations:
+
+```ts
+interface MoveNode {
+  san: string
+  uci: string
+  fen: string
+  annotation?: {
+    comment: string          // "This controls the center and develops with tempo"
+    quality?: '!!' | '!' | '!?' | '?!' | '?' | '??'
+    arrows?: Arrow[]         // show ideas from this position
+    highlights?: Square[]
+  }
+  children: MoveNode[]       // mainline is children[0], alternatives are children[1+]
+  isMainline: boolean
+  hints?: {                  // escalating hints on request
+    0: string                // vague: "Think about development"
+    1: Arrow[]               // directional: arrow to target square
+    2: string                // full: "Nf3 attacks e5 and develops the knight"
+  }
+}
+```
+
+### Backend
+
+- [ ] `models/practice_session.py` — tracks which lines were drilled, success rate, timestamp
+- [ ] `routers/practice.py` — `POST /practice/opening/record` (log a drill attempt)
+- [ ] `GET /practice/opening/progress` — return stats per opening for the Practice home and Profile
+
+### Frontend
+
+- [ ] `/practice/openings` — opening picker (same left nav as Study, but links to drill mode)
+- [ ] `PracticeBoard.tsx` — interactive board that checks moves against the move tree
+  - Player drags pieces; move is validated against tree children
+  - Mainline match → positive feedback, show annotation comment, advance
+  - Known sideline match → "Good try — the main line is..." + explain difference
+  - Unknown move → offer escalating hint (vague → arrow → full explanation)
+  - Hint button surfaces hints at increasing specificity
+- [ ] Progress indicators — moves completed, accuracy %, lines mastered
+- [ ] Streak / rep count — track how many times each line has been drilled correctly
+
+**Done when:** You can select the Italian Game, play it out move by move against the tree, receive commentary on each move, request hints when stuck, and see your progress tracked over sessions.
+
+---
+
+## Phase 11 — Practice: Endgames + Patterns
+**Goal:** Extend the practice framework to endgame positions and tactical patterns.
+
+- [ ] `/practice/endgames` — standard endgame positions as move trees (K+P vs K, Lucena, Philidor, etc.)
+- [ ] `/practice/patterns` — pattern recognition drills (forks, pins, skewers, back-rank mates)
+- [ ] Shared `PracticeBoard` component handles all drill types
+- [ ] Progress tracked per category in SQLite
+
+---
+
+## Phase 12 — Puzzles (Full)
+**Goal:** Tactical puzzle trainer with rating tracking.
+
+- [ ] `services/puzzles.py` — Lichess Puzzles API (filter by theme + rating)
+- [ ] `routers/puzzles.py` — `GET /puzzles/next` by rating range + theme
+- [ ] Puzzle board — find the winning line
+- [ ] LLM explains why the solution works when asked
+- [ ] Puzzle rating tracked separately from game ELO
+
+---
+
+## Phase 13 — Deployment
 **Goal:** Accessible from anywhere, not just localhost.
 
 - [ ] `backend/Dockerfile` — includes Stockfish binary install
 - [ ] Choose hosting (Fly.io / Render / VPS — TBD)
-- [ ] Frontend build + static file serving (Nginx or CDN)
+- [ ] Frontend build + static file serving
 - [ ] Environment variable config for production
 - [ ] Basic rate limiting on LLM endpoint
 - [ ] CORS config locked down
@@ -229,4 +297,4 @@ Nav: [ Play ]  [ Learn ]  [ Profile ]
 ---
 
 ## Current Phase
-**→ Phase 7 — Polish + UX** (Profile section remaining, then Phase 8)
+**→ Phase 7 — Polish + UX** (Study/Openings board centering, Profile section, then nav restructure for Study/Practice split)

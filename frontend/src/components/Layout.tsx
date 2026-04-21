@@ -17,10 +17,17 @@ const PlayIcon = () => (
   </svg>
 )
 
-const LearnIcon = () => (
+const StudyIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
-      d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+      d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+  </svg>
+)
+
+const PracticeIcon = () => (
+  <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
   </svg>
 )
 
@@ -42,6 +49,13 @@ const EndGameIcon = () => (
   <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
       d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+  </svg>
+)
+
+const PatternsIcon = () => (
+  <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75}
+      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
   </svg>
 )
 
@@ -107,8 +121,10 @@ function useCollapsed() {
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function Layout() {
   const location = useLocation()
-  const learnActive = location.pathname.startsWith('/learn')
-  const [learnOpen, setLearnOpen] = useState(learnActive)
+  const studyActive = location.pathname.startsWith('/study')
+  const practiceActive = location.pathname.startsWith('/practice')
+  const [studyOpen, setStudyOpen] = useState(studyActive)
+  const [practiceOpen, setPracticeOpen] = useState(practiceActive)
   const { collapsed, toggle } = useCollapsed()
 
   // Shared active / inactive class builders
@@ -175,43 +191,96 @@ export default function Layout() {
         {navItem('/play', 'Play', <PlayIcon />)}
         {navItem('/puzzles', 'Puzzles', <PuzzleIcon />)}
 
-        {/* Learn — expandable */}
+        {/* Study — expandable */}
         <div>
           <button
-            onClick={() => setLearnOpen((o) => !o)}
-            title={collapsed ? 'Learn' : undefined}
+            onClick={() => setStudyOpen((o) => !o)}
+            title={collapsed ? 'Study' : undefined}
             className={`w-full text-left rounded-lg text-base font-semibold transition-colors flex items-center border-l-2 border-transparent py-2.5 ${
               collapsed ? 'justify-center px-0' : 'px-3 gap-3'
             } ${
-              learnActive
+              studyActive
                 ? 'text-white'
                 : 'text-gray-400 hover:text-white hover:bg-gray-700/40'
             }`}
           >
-            <LearnIcon />
+            <StudyIcon />
             {!collapsed && (
               <>
-                <span className="flex-1">Learn</span>
-                <ChevronIcon open={learnOpen} />
+                <span className="flex-1">Study</span>
+                <ChevronIcon open={studyOpen} />
               </>
             )}
           </button>
 
-          {learnOpen && !collapsed && (
+          {studyOpen && !collapsed && (
             <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-gray-700 pl-3">
-              {navItem('/learn/openings', 'Opening', <OpeningsIcon />)}
-              {navItem('/learn/middle-game', 'Middle Game', <MiddleGameIcon />)}
-              {navItem('/learn/end-game', 'End Game', <EndGameIcon />)}
+              {navItem('/study/openings', 'Opening', <OpeningsIcon />)}
+              {navItem('/study/middlegame', 'Middle Game', <MiddleGameIcon />)}
+              {navItem('/study/endgame', 'End Game', <EndGameIcon />)}
             </div>
           )}
 
-          {/* Collapsed: show sub-items as standalone icon rows */}
           {collapsed && (
             <div className="flex flex-col gap-1 mt-1">
               {[
-                { to: '/learn/openings',    title: 'Opening',     Icon: OpeningsIcon },
-                { to: '/learn/middle-game', title: 'Middle Game', Icon: MiddleGameIcon },
-                { to: '/learn/end-game',    title: 'End Game',    Icon: EndGameIcon },
+                { to: '/study/openings',   title: 'Opening',    Icon: OpeningsIcon },
+                { to: '/study/middlegame', title: 'Middle Game', Icon: MiddleGameIcon },
+                { to: '/study/endgame',    title: 'End Game',   Icon: EndGameIcon },
+              ].map(({ to, title, Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  title={title}
+                  className={({ isActive }) =>
+                    `flex justify-center py-2.5 rounded-lg border-l-2 transition-colors ${
+                      isActive ? activeBase : inactiveBase
+                    }`
+                  }
+                >
+                  <Icon />
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Practice — expandable */}
+        <div>
+          <button
+            onClick={() => setPracticeOpen((o) => !o)}
+            title={collapsed ? 'Practice' : undefined}
+            className={`w-full text-left rounded-lg text-base font-semibold transition-colors flex items-center border-l-2 border-transparent py-2.5 ${
+              collapsed ? 'justify-center px-0' : 'px-3 gap-3'
+            } ${
+              practiceActive
+                ? 'text-white'
+                : 'text-gray-400 hover:text-white hover:bg-gray-700/40'
+            }`}
+          >
+            <PracticeIcon />
+            {!collapsed && (
+              <>
+                <span className="flex-1">Practice</span>
+                <ChevronIcon open={practiceOpen} />
+              </>
+            )}
+          </button>
+
+          {practiceOpen && !collapsed && (
+            <div className="ml-3 mt-1 flex flex-col gap-1 border-l border-gray-700 pl-3">
+              {navItem('/practice/openings', 'Openings', <OpeningsIcon />)}
+              {navItem('/practice/endgames', 'Endgames', <EndGameIcon />)}
+              {navItem('/practice/patterns', 'Patterns', <PatternsIcon />)}
+            </div>
+          )}
+
+          {collapsed && (
+            <div className="flex flex-col gap-1 mt-1">
+              {[
+                { to: '/practice/openings', title: 'Openings', Icon: OpeningsIcon },
+                { to: '/practice/endgames', title: 'Endgames', Icon: EndGameIcon },
+                { to: '/practice/patterns', title: 'Patterns', Icon: PatternsIcon },
               ].map(({ to, title, Icon }) => (
                 <NavLink
                   key={to}

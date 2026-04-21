@@ -6,11 +6,20 @@ import { useSettings } from '../contexts/SettingsContext'
 
 const PIECE_CODES = ['wP', 'wR', 'wN', 'wB', 'wQ', 'wK', 'bP', 'bR', 'bN', 'bB', 'bQ', 'bK']
 
+const AUTOMATE_PIECES: Partial<Record<string, string>> = {
+  wP: '/pieces/wP.svg',
+  bP: '/pieces/bP.svg',
+  wR: '/pieces/wR.svg',
+  bR: '/pieces/bR.svg',
+}
+
 function buildCustomPieces(pieceSet: string) {
   if (pieceSet === 'cburnett') return undefined
   const pieces: Record<string, ({ squareWidth }: { squareWidth: number }) => JSX.Element> = {}
   for (const code of PIECE_CODES) {
-    const url = `https://lichess1.org/assets/piece/${pieceSet}/${code}.svg`
+    const url = pieceSet === 'automate' && AUTOMATE_PIECES[code]
+      ? AUTOMATE_PIECES[code]!
+      : `https://lichess1.org/assets/piece/${pieceSet === 'automate' ? 'cburnett' : pieceSet}/${code}.svg`
     pieces[code] = ({ squareWidth }) => (
       <img src={url} width={squareWidth} height={squareWidth} draggable={false} alt={code} />
     )

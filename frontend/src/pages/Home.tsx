@@ -64,13 +64,13 @@ const NAV_CARDS = [
     description: 'Challenge the engine at any rating. Your ELO updates after every game.',
   },
   {
-    to: '/learn',
+    to: '/study',
     icon: <OpeningsIcon />,
-    title: 'Learn',
-    description: 'Opening, middle game, end game, and puzzles — work through every phase of chess.',
+    title: 'Study',
+    description: 'Opening, middle game, and endgame — work through every phase of chess.',
   },
   {
-    to: '/learn/puzzles',
+    to: '/puzzles',
     icon: <PuzzleIcon />,
     title: 'Puzzles',
     description: 'Sharpen your tactics with puzzles filtered by theme and difficulty.',
@@ -191,7 +191,7 @@ export default function Home() {
             <span className="text-xs font-semibold uppercase tracking-wider">Continue Learning</span>
           </div>
           <button
-            onClick={() => navigate('/learn')}
+            onClick={() => navigate('/study')}
             className="flex items-center gap-1 text-xs text-brand-light hover:text-brand-lighter transition-colors"
           >
             View all <ChevronRightIcon />
@@ -226,7 +226,7 @@ export default function Home() {
         </div>
 
         <button
-          onClick={() => navigate('/learn')}
+          onClick={() => navigate('/study')}
           className="self-start px-4 py-2 bg-brand-dark hover:bg-brand text-white text-sm font-semibold rounded-lg transition-colors"
         >
           Continue
